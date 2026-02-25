@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sweet Quiz 💕</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    font-family:Poppins, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:url("https://www.shutterstock.com/image-vector/cute-valentine-dessert-seamless-pattern-600nw-2702029091.jpg") center/cover no-repeat;
+}
+
+/* floating desserts */
+.food{
+    position:absolute;
+    font-size:22px;
+    animation:floatUp linear infinite;
+}
+@keyframes floatUp{
+    from{transform:translateY(100vh);opacity:1;}
+    to{transform:translateY(-10vh);opacity:0;}
+}
+
+.quiz-box{
+    background:rgba(255,255,255,0.93);
+    padding:25px;
+    border-radius:25px;
+    width:95%;
+    max-width:900px;
+    text-align:center;
+}
+
+.options-row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:15px;
+}
+
+.option{
+    background:#ffd6ec;
+    padding:10px;
+    border-radius:12px;
+    cursor:pointer;
+    width:150px;
+}
+.option img{
+    width:100%;
+    height:100px;
+    object-fit:cover;
+    border-radius:10px;
+}
+.selected{
+    outline:4px solid hotpink;
+}
+
+/* popup */
+.popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.5);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+.popup-box{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="quiz-box">
+<h3 id="question"></h3>
+<div id="options" class="options-row"></div>
+<button onclick="nextQuestion()" style="margin-top:15px;padding:10px 25px;border:none;border-radius:12px;background:#ff69b4;color:white;">Next 💕</button>
+</div>
+
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <div style="font-size:60px">🐱</div>
+    <h3 id="resultText"></h3>
+
+    <a id="certBtn"
+       href="https://gemini.google.com/share/edc71f8d3cac"
+       target="_blank"
+       style="display:none;margin-top:15px;padding:10px 18px;background:#ff69b4;color:white;text-decoration:none;border-radius:12px;font-weight:bold;">
+       🎀 View Certificate
+    </a>
+  </div>
+</div>
+
+<script>
+// floating desserts
+const foods=["🍰","🧁","🍩","🍪","🍫"];
+function createFood(){
+    const f=document.createElement("div");
+    f.className="food";
+    f.innerHTML=foods[Math.floor(Math.random()*foods.length)];
+    f.style.left=Math.random()*100+"vw";
+    f.style.animationDuration=(4+Math.random()*4)+"s";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),8000);
+}
+setInterval(createFood,600);
+
+/* ===== QUIZ DATA ===== */
+
+const quiz=[
+{
+q:"When you r coming to college from home whom would you prefer ?",
+type:"single",
+correct:["premiumrapido"],
+options:[
+{name:"Aeroplane",img:"images/aero.jpg",value:"aeroplane"},
+{name:"Cab",img:"https://c8.alamy.com/comp/DMAX9K/taxi-driver-vector-cartoon-DMAX9K.jpg",value:"cab"},
+{name:"Rapido",img:"https://etimg.etb2bimg.com/photo/87585373.cms",value:"rapido"},
+{name:"Skateboard",img:"https://m.media-amazon.com/images/I/81yh8+MHWHL.jpg",value:"skate"},
+{name:"Your Premium Rapido",img:"images/premiumrapido.png",value:"premiumrapido"}
+]
+},
+{
+q:"When u r sad what would your brother buys for you ? (choose two)",
+type:"multi2",
+correct:["kitkat","waffle"],
+options:[
+{name:"Lays",img:"https://www.bbassets.com/media/uploads/p/l/102750_17-lays-potato-chips-indias-magic-masala.jpg",value:"lays"},
+{name:"Kitkat",img:"images/kitkat.jfif",value:"kitkat"},
+{name:"DairyMilk",img:"https://www.egiftmart.com/uploaded_files/itempic/dairymilk-silk.jpg",value:"dairy"},
+{name:"Waffels",img:"https://blog.wonderchef.com/wp-content/uploads/2022/11/Coffee-Syrup-_-Waffles-1.jpg",value:"waffle"},
+{name:"Poratta",img:"https://www.whiskaffair.com/wp-content/uploads/2020/04/Kerala-Parotta-3.jpg",value:"poratta"}
+]
+},
+{
+q:"What would your brother choose ?",
+type:"singleEmoji",
+correct:["sister"],
+options:[
+{name:"Money",img:"https://imageio.forbes.com/blogs-images/ofx/files/2018/09/OFX3-iStock-492595743-1200x800.jpg",value:"money"},
+{name:"Car",img:"https://i.ytimg.com/vi/zEr-mm8OSGo/hq720.jpg",value:"car"},
+{name:"Sisters happiness",img:"https://www.giftalove.com/blog/wp-content/uploads/1-6.jpg",value:"sister"},
+{name:"Girl friend",img:"https://assets.vogue.in/photos/67a1eff7099c57876c13390b/3:4/w_2560,c_limit/Khushi%20Kapoor%20Vedang%20Raina.jpeg",value:"gf"},
+{name:"Food",img:"https://img.freepik.com/free-photo/top-view-table-full-food_23-2149209253.jpg",value:"food"}
+]
+},
+{
+q:"Among the options choose two which is related to your bond",
+type:"multi2",
+correct:["doremon","ben10"],
+options:[
+{name:"Tom and Jerry",img:"https://img.freepik.com/premium-vector/tom-jerry-cartoon-vector-art-illustration_1025825-1013.jpg",value:"tom"},
+{name:"MickyMouse",img:"https://static.wikitide.net/greatcharacterswiki/b/bf/Mickey_Mouse_Disney_1.png",value:"mickey"},
+{name:"Doremon and Dorami",img:"https://doraemonworld2018.wordpress.com/wp-content/uploads/2018/03/7bd5fb679df55e4b7087ea75749883bd-doraemon-card-captor.jpg",value:"doremon"},
+{name:"Ben10 and Gwen",img:"images/ben.jfif",value:"ben10"}
+]
+},
+{
+q:"For how long days will he be your brother",
+type:"singleCheck",
+correct:["ghost"],
+options:[
+{name:"Till college end",img:"https://www.cnu.org/sites/default/files/styles/public_square_feature_image/public/BostonCollege1.jpg",value:"college"},
+{name:"Till marriage",img:"https://www.aryasamajpanditji.com/wp-content/uploads/2015/11/Arya-Samaj-Marriage-Rituals.webp",value:"marriage"},
+{name:"After few years",img:"http://www.yearshk.com/cdn/shop/files/Years_Logo_2_copy_2.jpg",value:"years"},
+{name:"Untill death",img:"https://community.thriveglobal.com/wp-content/uploads/2017/11/death.jpg",value:"death"},
+{name:"After death as Ghost bro sis",img:"images/ghosties.jfif",value:"ghost"}
+]
+},
+{
+q:"Who is your brothers fav sister ?",
+type:"text"
+}
+];
+
+let index=0,score=0,selected=[];
+
+function loadQ(){
+selected=[];
+const q=quiz[index];
+question.innerText=q.q;
+options.innerHTML="";
+
+if(q.type==="text"){
+options.innerHTML='<input id="textAns" placeholder="Enter your answer 💕" style="padding:10px;width:60%;border-radius:10px;border:1px solid pink;">';
+return;
+}
+
+q.options.forEach(opt=>{
+const d=document.createElement("div");
+d.className="option";
+d.innerHTML=`<img src="${opt.img}"><br>${opt.name}`;
+d.onclick=()=>selectOption(d,opt.value,q.type);
+options.appendChild(d);
+});
+}
+
+function selectOption(div,val,type){
+if(type.includes("single")){
+document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+selected=[val];
+div.classList.add("selected");
+}else{
+div.classList.toggle("selected");
+if(selected.includes(val)) selected=selected.filter(x=>x!==val);
+else selected.push(val);
+}
+}
+
+function nextQuestion(){
+const q=quiz[index];
+
+if(index<5){
+if(JSON.stringify([...selected].sort())===JSON.stringify([...q.correct].sort())){
+score++;
+if(q.type==="singleEmoji") alert("🥰💖 Sweet choice!");
+}else{
+if(q.type==="singleEmoji") alert("😡😡 Wrong choice!");
+if(q.type==="singleCheck") alert("Change your mind ❗");
+}
+}
+
+if(q.type==="text"){
+localStorage.setItem("favSister",document.getElementById("textAns").value);
+}
+
+index++;
+if(index>=quiz.length) showResult();
+else loadQ();
+}
+
+function showResult(){
+localStorage.setItem("quizScore",score);
+popup.style.display="flex";
+
+if(score>=3){
+resultText.innerText="Congratulations 💖\nYou are awarded as the best sister in the world";
+certBtn.style.display="inline-block";
+}else{
+resultText.innerText="Dont worry 💕\nYou are a best sister to your brother";
+certBtn.style.display="none";
+}
+}
+
+loadQ();
+</script>
+
+</body>
+</html>

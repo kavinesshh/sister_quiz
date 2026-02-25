@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Princess Login 💕</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    font-family:Poppins, sans-serif;
+    background:url("https://static.vecteezy.com/system/resources/thumbnails/016/348/270/small/tunnel-of-concentric-hearts-romantic-cute-background-pink-aesthetic-hearts-backdrop-illustration-vector.jpg") center/cover no-repeat;
+}
+
+.login-box{
+    background:rgba(255,255,255,0.92);
+    padding:40px;
+    border-radius:25px;
+    text-align:center;
+    width:300px;
+}
+
+input{
+    width:90%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:10px;
+    border:1px solid pink;
+}
+
+button{
+    padding:10px 25px;
+    border:none;
+    border-radius:12px;
+    background:#ff69b4;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* floating hearts */
+.heart{
+    position:absolute;
+    color:#ff69b4;
+    animation:floatUp linear infinite;
+}
+@keyframes floatUp{
+    from{transform:translateY(100vh);}
+    to{transform:translateY(-10vh);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+<h2>Princess Login 💖</h2>
+
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+
+<br><br>
+<button onclick="login()">Login 💕</button>
+
+<p id="msg" style="color:red;"></p>
+</div>
+
+<script>
+// floating hearts
+function createHeart(){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="💗";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=(4+Math.random()*4)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),8000);
+}
+setInterval(createHeart,500);
+
+// login check
+function login(){
+    const u=document.getElementById("user").value;
+    const p=document.getElementById("pass").value;
+
+    if(u==="brothers_lil_princess" && p==="1709"){
+        window.location.href="quiz.html";
+    }else{
+        msg.innerText="Wrong username or password ❌";
+    }
+}
+</script>
+
+</body>
+</html>
